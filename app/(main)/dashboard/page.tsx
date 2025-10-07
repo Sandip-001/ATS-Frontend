@@ -8,7 +8,7 @@ import AttendanceTable from "./_components/AttendanceTable";
 import CalendarSchedule from "./_components/CalendarSchedule";
 
 const Dashboard = () => {
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
 
   const router = useRouter();
 
