@@ -1,15 +1,23 @@
 "use client";
 
-import Dashboard from "./(main)/dashboard/page";
-import Login from "./auth/page";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "./provider";
+import dynamic from "next/dynamic";
 
 export default function HomePage() {
   const { user } = useAuth();
+  const router = useRouter();
 
-  return (
-    <div style={{ padding: 20 }}>
-      {user ? <Dashboard /> : <Login />}
-    </div>
-  );
+  useEffect(() => {
+    if (user) {
+      router.replace("/dashboard"); // redirect to dashboard
+    }
+  }, [user, router]);
+
+  if (user) return <p>Redirecting to dashboard...</p>;
+
+  const Login = dynamic(() => import("./auth/page"), { ssr: false });
+  return <Login />;
 }
+
