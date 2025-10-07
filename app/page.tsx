@@ -5,7 +5,7 @@ import Login from "./auth/page";
 import { useAuth } from "./provider";
 
 export default function HomePage() {
-  const { user, profile, signOut } = useAuth();
+  const { user } = useAuth();
 
   return (
     <div style={{ padding: 20 }}>

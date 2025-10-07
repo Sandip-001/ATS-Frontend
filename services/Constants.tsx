@@ -45,15 +45,15 @@ export const SidebarOptions = [
     subMenu: [
       {
         name: "All Candidates",
-        path: "/people/all-candidates",
+        path: "/all-candidates",
       },
       {
         name: "Create Candidates",
-        path: "/people/create-candidate",
+        path: "/create-candidate",
       },
       {
         name: "Interact Candidates",
-        path: "/people/interact-candidate",
+        path: "/interact-candidates",
       },
     ],
   },
@@ -63,7 +63,7 @@ export const SidebarOptions = [
     subMenu: [
       {
         name: "Hiring Metrics",
-        path: "/performance/hiring-metrics",
+        path: "/hiring-metrics",
       },
       {
         name: "Interview",
@@ -81,7 +81,7 @@ export const SidebarOptions = [
       },
       {
         name: "Company Profile",
-        path: "/admin/company-profile",
+        path: "/company-profile",
       },
       {
         name: "Job Templates",
@@ -452,3 +452,37 @@ export const mockApplicants = [
     status: "Rejected",
   },
 ];
+
+
+
+
+export const companyData = {
+  id:"1",
+  name: "TechNest Innovations Inc.",
+  avatar: "https://www.alucoildesign.com/assets/pages/media/profile/profile_user.jpg",
+  industry: "Information Technology & Services",
+  location: "New York, USA",
+  website: "www.companysite.com",
+  companySize: "51–200 employees",
+  currency: "EUR",
+  founded: "2017",
+  about:
+    "TechNest Innovations is a cutting-edge technology company delivering high-quality web and mobile solutions to clients worldwide. Our team of expert developers, designers, and strategists collaborate closely with businesses to build scalable, user-focused products. We value creativity, agility, and transparency.",
+  socials: {
+    linkedin: "https://linkedin.com/company/technest",
+    twitter: "https://x.com/technest",
+    facebook: "https://facebook.com/technest",
+  },
+  testimonials: [
+    {
+      name: "Sarah Johnson",
+      comment:
+        "Working with TechNest has been a transformative experience! Their team is highly skilled and professional.",
+    },
+    {
+      name: "David Miller",
+      comment:
+        "Outstanding web development service — timely delivery and perfect communication.",
+    },
+  ],
+};

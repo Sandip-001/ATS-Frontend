@@ -14,9 +14,8 @@ import Link from "next/link";
 motion.div = motion("div"); // add shortcut
 
 const Login = () => {
-  const { user, signInWithGoogle } = useAuth();
+  const { user, login } = useAuth();
   const router = useRouter();
-  
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -130,13 +129,20 @@ const Login = () => {
               <Checkbox id="remember" />
               <Label htmlFor="remember">Remember Me</Label>
             </div>
-            <Link href="/forgot-password"  className="text-sm text-blue-600 hover:underline">
+            <Link
+              href="/forgot-password"
+              className="text-sm text-blue-600 hover:underline"
+            >
               Forgot Password
             </Link>
           </div>
 
           {/* Login Button */}
-          <Button className="w-full disabled:bg-gray-400 disabled:opacity-50" disabled={!isFormValid}>
+          <Button
+            className="w-full disabled:bg-gray-400 disabled:opacity-50"
+            disabled={!isFormValid}
+            onClick={() => login(email, password)}
+          >
             Login
           </Button>
         </div>
@@ -153,7 +159,6 @@ const Login = () => {
           <Button
             variant="outline"
             className="flex-1 flex items-center justify-center space-x-2"
-            onClick={signInWithGoogle}
           >
             <FaGoogle className="text-red-500" />
             <span>Google</span>
@@ -161,7 +166,6 @@ const Login = () => {
           <Button
             variant="outline"
             className="flex-1 flex items-center justify-center space-x-2"
-            onClick={signInWithGoogle}
           >
             <FaApple className="text-black" />
             <span>Apple</span>

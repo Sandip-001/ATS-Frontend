@@ -1,107 +1,62 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { supabase } from "@/services/supabaseClient";
 import { useRouter } from "next/navigation";
-import type { User } from "@supabase/supabase-js";
+import { toast } from "sonner";
 
 type Profile = {
   id: string;
-  full_name: string | null;
-  email: string | null;
-  avatar_url: string | null;
+  full_name: string;
+  email: string;
+  avatar_url?: string;
 };
 
 type AuthContextType = {
-  user: User | null;
-  profile: Profile | null;
-  signInWithGoogle: () => Promise<void>;
-  signOut: () => Promise<void>;
+  user: Profile | null;
+  login: (email: string, password: string) => void;
+  logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const DUMMY_USER = {
+  id: "1",
+  full_name: "John Doe",
+  email: "john@gmail.com",
+  password: "123456", // dummy password
+  avatar_url: "https://www.alucoildesign.com/assets/pages/media/profile/profile_user.jpg",
+};
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [user, setUser] = useState<Profile | null>(null);
   const router = useRouter();
 
-  // 🔹 Sync "profiles" table
-  const handleUser = async (user: User) => {
-    if (!user?.id) return;
-    console.log("⚡ handleUser:", user.email);
-
-    // Upsert profile
-    const { error } = await supabase.from("profiles").upsert(
-      {
-        id: user.id,
-        full_name: user.user_metadata?.full_name || user.email?.split("@")[0],
-        email: user.email,
-        avatar_url: user.user_metadata?.avatar_url || null,
-      },
-      { onConflict: "id" }
-    );
-
-    if (error) {
-      console.error("❌ Error inserting profile:", error.message);
-    } else {
-      console.log("✅ Profile synced for:", user.email); // 👈 this should log!
-    }
-
-    // ✅ Fetch profile row back
-    const { data: profileData, error: fetchError } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .single();
-
-    if (fetchError) {
-      console.error("❌ Error fetching profile:", fetchError.message);
-    } else {
-      setProfile(profileData);
-      console.log("✅ Profile loaded:", profileData);
-    }
-  };
-
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setUser(session.user);
-        handleUser(session.user);
-      }
-    });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        setUser(session.user);
-        handleUser(session.user);
-        //router.push("/");
-      } else {
-        setUser(null);
-        setProfile(null);
-      }
-    });
-
-    return () => subscription.unsubscribe();
+    // Check if user is in localStorage
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) setUser(JSON.parse(storedUser));
   }, []);
 
-  const signInWithGoogle = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: `${window.location.origin}/dashboard` },
-    });
+  const login = (email: string, password: string) => {
+    if (email === DUMMY_USER.email && password === DUMMY_USER.password) {
+      const { password, ...userData } = DUMMY_USER;
+      localStorage.setItem("user", JSON.stringify(userData));
+      setUser(userData);
+      toast.success("Login Sucessfull ✅");
+      router.push("/dashboard");
+    } else {
+      toast.error("❌ Wrong email or password");
+    }
   };
 
-  const signOut = async () => {
-    await supabase.auth.signOut();
+  const logout = () => {
+    localStorage.removeItem("user");
     setUser(null);
-    setProfile(null);
+    router.push("/auth");
   };
 
   return (
-    <AuthContext.Provider value={{ user, profile, signInWithGoogle, signOut }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
@@ -109,6 +64,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be inside AuthProvider");
+  if (!ctx) throw new Error("useAuth must be used inside AuthProvider");
   return ctx;
 };
