@@ -84,9 +84,13 @@ export const SidebarOptions = [
         path: "/company-profile",
       },
       {
+        name: "Employee",
+        path: "/employee",
+      },
+      /*{
         name: "Job Templates",
         path: "/admin/job-templates",
-      },
+      },*/
     ],
   },
 ];

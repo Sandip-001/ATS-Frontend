@@ -30,7 +30,7 @@ const Login = () => {
     }
   }, [user, router]);
 
-  if (user) return <p>Redirecting...</p>;
+  if (user) return <p className="text-center">Redirecting...</p>;
 
   return (
     <div className="h-screen flex overflow-hidden">
